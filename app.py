@@ -1,18 +1,25 @@
-from flask import Flask, request, jsonify
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+import matplotlib.pyplot as plt
 import pickle
-import numpy as np
 
-app = Flask(__name__)
+data = pd.read_csv('salary_data.csv')
 
-# Load the model from disk
-model = pickle.load(open("model.pkl", "rb"))
+X = data['YearsExperience'].values.reshape(-1, 1)
+y = data['Salary'].values
 
-@app.route('/predict', methods=['POST'])
-def predict():
-    data = request.get_json(force=True)
-    features = np.array(data['features']).reshape(1, -1)
-    prediction = model.predict(features)
-    return jsonify({'prediction': prediction[0]})
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+model = LinearRegression()
+
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+print(f"Mean Squared Error: {mse}")
+print(f"R-squared Score: {r2}")
