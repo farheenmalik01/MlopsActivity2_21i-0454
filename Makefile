@@ -1,5 +1,5 @@
 docker:
-	docker build -t activity2 .
+	docker build -t ${{ secrets.DOCKER_USERNAME }}/activity2:latest .
 
 images:
 	docker images
