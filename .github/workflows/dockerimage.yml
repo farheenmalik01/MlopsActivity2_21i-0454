@@ -47,7 +47,6 @@ jobs:
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN2 }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
-        
       - name: Push the Docker image to Docker Hub
         run: |
             docker push farheenmalik01/activity2:latest
@@ -56,7 +55,9 @@ jobs:
         run: make images
         
       - name: Start the Docker container
-        run: make start
+        run: |
+          docker pull farheenmalik01/activity2:latest
+          make start
         
       - name: List running containers
         run: make containers
